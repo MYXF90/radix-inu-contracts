@@ -22,7 +22,7 @@ Each token sale component maintains a vault of the `tokens_for_sale` and a `paym
 payments will be deposited. It uses the `price_per_token` to calculate how many tokens will be returned to the customer
 when a payment is received. The payment amount may not exceed the `max_personal_allocation` (same for every user).
 Finally, customers can only start buying tokens once `sale_started` has been set to `true`. The component
-uses `sale_tickets` to implement a simple form of whitelisting, where a user is only allowed to buy tokens if she is in
+uses `sale_tickets` to implement a simple form of whitelisting, where a user is only allowed to buy tokens if he is in
 possession of a ticket. An `admin_badge` is required to administer the component, i.e. to mint sale tickets, to start
 the token sale and to withdraw the payment tokens.
 
@@ -31,7 +31,7 @@ the token sale and to withdraw the payment tokens.
 Note: This section explains the token sale from the perspective of the programmer.  
 See the next section below for a typical test scenario.
 
-## Step 1 - Instantiating a component for our SHINY token sale:
+## Step 1 - Instantiating a component for our XRDINU token sale:
 
 ```rust
 pub fn new(
@@ -83,12 +83,12 @@ pub fn new(
 Our component's `new` function excepts a few arguments:
 
 1. `tokens_for_sale`: A bucket with tokens that customers should be able to buy. These tokens must be minted before
-   instantiating the TokenSale component. For this example let's say that we pass in 10,000 newly minted Shiny Tokens
-   (SHINY).
+   instantiating the TokenSale component. For this example let's say that we pass in 40,000,000 XRDINU Tokens
+   (XRDINU).
 2. `payment_token`: The address of the token we will accept as payment. XRD might be a good choice.
-3. `price_per_token`: The price in XRD per SHINY token. This means for 1 XRD a customer gets back 10 SHINY.
+3. `price_per_token`: The price in XRD per XRDINU token. This means for 1 XRD a customer gets back 10 XRDINU (for example).
 4. `max_personal_allocation`: The maximum allocation for each customer. Setting it to a value of `500` would mean that a
-   customer may at max give us 500 XRD and will receive 5,000 SHINY in return.
+   customer may at max give us 500 XRD and will receive 5,000 XRDINU in return.
 
 ## Step 2 - Whitelisting some customers:
 
@@ -157,14 +157,14 @@ When a customer calls the `buy_tokens` method, she must supply two arguments:
 1. `payment`: A bucket that contains the payment tokens (XRD in our example).
 2. `ticket`: A sale ticket that grants her access to the sale.
 
-The method will first check that the sale has started and that it has not ended yet (i.e. there are still SHINY tokens
+The method will first check that the sale has started and that it has not ended yet (i.e. there are still XRDINU tokens
 available). Next, the method will check that the customer has brought a ticket to the sale. If she did not bring a
 ticket, the method will exit with an error. If she brought a ticket it will be burned, so she cannot buy tokens multiple
 times. (Notice that we are using tokens instead of badges to implement our tickets as we can easily burn them.)  
-After having handled all initial checks and access control, the component will calculate the exact amount of SHINY and
+After having handled all initial checks and access control, the component will calculate the exact amount of XRDINU and
 XRD tokens to be exchanged. These amounts depend on the payment amount, the `max_personal_allocation` and the amount
 of `tokens_for_sale` that are left. Finally, the component puts the payment into the `payment_vault` and returns the
-bought SHINY tokens to the customer. It also returns any amount the customer might have overpaid.
+bought XRDINU tokens to the customer. It also returns any amount the customer might have overpaid.
 
 ## Step 5 - Profit:
 
@@ -196,16 +196,16 @@ resim new-account # Save the private key and account address into $customer_priv
 
 
 # Create some tokens that we can put up for sale
-resim new-token-fixed --symbol SHINY 10000 # Save the resource address into $shiny
+resim new-token-fixed --symbol XRDINU 10000 # Save the resource address into $shiny
 
 # Publish our package
 resim publish . # Save the package address into $package
 
 # Instantiate the TokenSale component
 # We pass as arguments:
-# - a bucket with our 10,000 SHINY tokens
+# - a bucket with our 10,000 XRDINU tokens
 # - the address of the XRD token that we will accept as the payment token
-# - the price per token: 0.1 XRD per SHINY
+# - the price per token: 0.1 XRD per XRDINU
 # - the maximum personal allocation: 500 XRD
 # 
 # The new call results in the creating of 4 new components.
@@ -215,7 +215,7 @@ resim publish . # Save the package address into $package
 # Also, save the component address into $component
 resim call-function $package TokenSale new 10000,$shiny $xrd 0.1 500
 
-# Let's check our component. It should contain 10,000 SHINY tokens and no XRD.
+# Let's check our component. It should contain 10,000 XRDINU tokens and no XRD.
 resim show $component
 
 # Mint some sale tickets. We need to specify the number of tickets we wish to create. 
@@ -238,14 +238,14 @@ resim set-default-account $customer_account $customer_private_key
 resim call-method $component buy_tokens 600,$xrd 1,$ticket
 
 # Let's check how many tokens we received.
-# We should see 5000 SHINY tokens in our wallet. Even though we tried sending 600 XRD, the component only took 500 XRD 
+# We should see 5000 XRDINU tokens in our wallet. Even though we tried sending 600 XRD, the component only took 500 XRD 
 # and returned the other 100 XRD to us.
 resim show $customer_account
 
 # Let's switch back to our admin user.
 resim set-default-account $admin_account $admin_private_key
 
-# Checking on our component, we see that some SHINY tokens have been sold and some XRD tokens have been deposited.
+# Checking on our component, we see that some XRDINU tokens have been sold and some XRD tokens have been deposited.
 resim show $component
 
 # Even if the token sale has not yet ended, we may withdraw payments received up to this point.
