@@ -196,7 +196,7 @@ resim new-account # Save the private key and account address into $customer_priv
 
 
 # Create some tokens that we can put up for sale
-resim new-token-fixed --symbol XRDINU 10000 # Save the resource address into $shiny
+resim new-token-fixed --symbol XRDINU 10.000.000 # Save the resource address into $shiny
 
 # Publish our package
 resim publish . # Save the package address into $package
